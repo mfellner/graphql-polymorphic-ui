@@ -1,22 +1,41 @@
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import React from 'react';
 
 const HELLO_QUERY = gql`
-  {
-    hello
+  query user($id: ID!) {
+    user(id: $id) {
+      id
+      address {
+        ... on EuUserAddress {
+          addressFirstLine
+          addressSecondLine
+        }
+        ... on UsUserAddress {
+          street
+          addressFirstLine
+          addressSecondLine
+          country
+        }
+      }
+    }
   }
 `;
 
 export default function AddressContainer() {
-  const { loading, error, data } = useQuery(HELLO_QUERY);
+  const id = 'eu';
+  const { loading, error, data } = useQuery(HELLO_QUERY, { variables: { id } });
 
   if (loading) {
     return <p>Loading...</p>;
   }
   if (error) {
-    return <p>Error :(</p>;
+    return <p>{error}</p>;
   }
 
-  return data.hello;
+  return (
+    <pre>
+      <code>{JSON.stringify(data.user, null, 2)}</code>
+    </pre>
+  );
 }

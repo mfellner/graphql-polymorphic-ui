@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { createClient } from './apollo';
 import App from './app';
 
-const client = new ApolloClient();
+async function main() {
+  const client = await createClient();
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById('main'),
-);
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>,
+    document.getElementById('main'),
+  );
+}
+
+main().catch(err => console.error(err));
